@@ -1,5 +1,4 @@
 # Program Biodata Kelompok - Tugas Modul 3
-
 def tampilkan_header():
     print("=" * 60)
     print("           PROGRAM BIODATA ANGGOTA KELOMPOK         ")
@@ -23,7 +22,6 @@ def main():
     print("-" * 60)
     
     daftar_anggota = []
-    
     # Perulangan untuk input data setiap anggota
     for i in range(1, jumlah_anggota + 1):
         print(f"\n--- Input Data Anggota Ke-{i} ---")
@@ -38,7 +36,6 @@ def main():
             "peran": peran
         }
         daftar_anggota.append(anggota)
-        
     # Menampilkan Rincian Biodata
     print("\n" + "=" * 60)
     print(f"         RINCIAN BIODATA {nama_kelompok.upper()}         ")
@@ -64,6 +61,5 @@ def main():
     print("=" * 60)
     print("Terima kasih! Program selesai.")
     print("=" * 60)
-
 if __name__ == "__main__":
     main()
