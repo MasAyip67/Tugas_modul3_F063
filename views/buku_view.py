@@ -2,14 +2,15 @@ import customtkinter as ctk
 from tkinter import ttk
 
 class BukuView(ctk.CTk):
-    def __init__(self):
+    def __init__(self, current_role="admin"):
         super().__init__()
-        self.title("Sistem Manajemen Perpustakaan")
-        self.geometry("800x450")
+        self.current_role = current_role
+        self.title(f"Sistem Manajemen Perpustakaan - Mode: {self.current_role.upper()}")
+        self.geometry("800x500")
 
-        # Konfigurasi Grid Utama (1 Baris, 2 Kolom)
-        self.grid_columnconfigure(0, weight=1) # Kolom Kiri (Form)
-        self.grid_columnconfigure(1, weight=2) # Kolom Kanan (Tabel lebih lebar)
+        # Konfigurasi Grid Utama (2 Baris, 2 Kolom)
+        self.grid_columnconfigure(0, weight=1)  # Kolom Kiri (Form)
+        self.grid_columnconfigure(1, weight=2)  # Kolom Kanan (Tabel lebih lebar)
         self.grid_rowconfigure(0, weight=1)
 
         # ==========================================
@@ -34,13 +35,19 @@ class BukuView(ctk.CTk):
         self.btn_simpan = ctk.CTkButton(self.frame_kiri, text="Simpan Data", fg_color="green")
         self.btn_simpan.pack(pady=20, padx=15, fill="x")
 
-        # Tambahan Tombol Baru 
         self.btn_update = ctk.CTkButton(self.frame_kiri, text="Perbarui Data (Update)", fg_color="blue")
         self.btn_update.pack(pady=10, padx=15, fill="x")
 
         self.btn_delete = ctk.CTkButton(self.frame_kiri, text="Hapus Data (Delete)", fg_color="red")
         self.btn_delete.pack(pady=10, padx=15, fill="x")
 
+        # OTORISASI: tombol Update dan Delete terkunci untuk anggota
+        if self.current_role == "anggota":
+            self.btn_update.configure(state="disabled")
+            self.btn_delete.configure(state="disabled")
+        else:
+            self.btn_update.configure(state="normal")
+            self.btn_delete.configure(state="normal")
 
         # ==========================================
         # FRAME KANAN: TABEL DAFTAR BUKU
@@ -50,17 +57,14 @@ class BukuView(ctk.CTk):
 
         ctk.CTkLabel(self.frame_kanan, text="Daftar Koleksi Buku", font=("Arial", 16, "bold")).pack(pady=15)
 
-        # Komponen Tabel (Treeview dari tkinter standar)
         kolom = ("id", "judul", "penulis", "tahun")
         self.tabel = ttk.Treeview(self.frame_kanan, columns=kolom, show="headings", height=15)
 
-        # Konfigurasi Header Tabel
         self.tabel.heading("id", text="ID")
         self.tabel.heading("judul", text="Judul Buku")
         self.tabel.heading("penulis", text="Penulis")
         self.tabel.heading("tahun", text="Tahun")
 
-        # Konfigurasi Lebar Kolom
         self.tabel.column("id", width=40, anchor="center")
         self.tabel.column("judul", width=150)
         self.tabel.column("penulis", width=120)
@@ -68,8 +72,28 @@ class BukuView(ctk.CTk):
 
         self.tabel.pack(fill="both", expand=True, padx=15, pady=10)
 
+        # ==========================================
+        # TOMBOL LOGOUT
+        # ==========================================
+        self.btn_logout = ctk.CTkButton(
+            self,
+            text="Logout",
+            fg_color="red",
+            command=self.handle_logout
+        )
+        self.btn_logout.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+
+    def handle_logout(self):
+        """Menutup jendela BukuView dan kembali ke form Login."""
+        self.destroy()
+        from controllers.auth_controller import AuthController  # impor di sini agar tidak circular
+        app = AuthController()
+        app.run()
+
+
 # Blok eksekusi untuk menguji tampilan grafis
 if __name__ == "__main__":
     app = BukuView()
     app.mainloop()
-#Moh Arif Sigit F5212520063
+
+# Moh Arif Sigit F5212520063
